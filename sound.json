@@ -1,0 +1,5 @@
+{
+  "start": "start.mp3",
+  "success": "alarm.wav",
+  "error": "error.mp3"
+}
