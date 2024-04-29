@@ -1,3 +1,4 @@
+.DS_Store
 chromedriver
 
 # Byte-compiled / optimized / DLL files
@@ -13,7 +14,6 @@ __pycache__/
 build/
 develop-eggs/
 dist/
-downloads/
 eggs/
 .eggs/
 lib/
