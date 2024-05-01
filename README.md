@@ -17,7 +17,8 @@ This bot automates the manual steps for you. You just need to fill out the initi
 3. Right-click the program and click 'Open' to run it (Don't double-click)
 4. Fill out the form and click 'Good luck' button to start (see the screenshot below)
 5. Wait for the alarm/notification
-6. Good luck!
+6. If you hear the alarm, rush to select the day and time and solve the reCAPTCHA. If the time dropdown is empty, it means it's gone. Go to the Terminal window and hit 'Enter' to start over.
+7. Good luck!
 
 <img width="783" alt="Screenshot 2024-04-30 at 00 08 11" src="https://github.com/chialunwu/berlin-auslanderbehorde-termin-bot/assets/4144711/e2bfd517-c2f3-4e60-9b62-d5829e91c3b9">
 
