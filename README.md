@@ -51,3 +51,14 @@ cd dist
 zip -r ../downloads/macos/applechip/berlin-termin-bot.zip berlin-termin-bot
 cd ..
 ```
+
+
+## Support ❤️
+
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4WQZ5PBVUVJ4A">
+  <img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" alt="Donate with PayPal" width=200 />
+</a>
+<br/>
+<a href="https://www.buymeacoffee.com/chialunwu">
+  <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=chialunwu&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" />
+</a>
