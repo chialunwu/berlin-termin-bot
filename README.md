@@ -24,6 +24,10 @@ This bot automates the manual steps for you. You just need to fill out the initi
 
 <img width="783" alt="Screenshot 2024-04-30 at 00 08 11" src="https://github.com/chialunwu/berlin-auslanderbehorde-termin-bot/assets/4144711/e2bfd517-c2f3-4e60-9b62-d5829e91c3b9">
 
+## Tips
+
+You'll most likely get an appointment during working hours when they release new slots. Outside of working hours, you might occasionally see available time slots when people cancel their appointments, but it's nearly impossible to secure one. If you run the bot from 9 a.m. to 5 p.m., Monday to Friday, you should be able to get an appointment within 2-3 weeks. Cheer up!
+
 ## Development
 
 ### To build
