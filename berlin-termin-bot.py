@@ -1,8 +1,11 @@
+import sys
+import termios
+import tty
+import select
 import time
 import platform
 import os
 import datetime
-import os
 import logging
 import json
 from platform import system
@@ -15,13 +18,12 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoAlertPresentException
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QComboBox, QCompleter
+from PyQt5.QtCore import Qt
 
 
-FORM_FILE = "/tmp/berlin_bot_form.json"
-
+FORM_FILE = os.path.join(os.sep,'tmp', 'berlin_bot_form.json')
 retry_seconds = 15
-
 system = system()
 
 logging.basicConfig(
@@ -36,6 +38,18 @@ def send_notification(title, message):
             os.system('osascript -e \'{}\''.format(script))
         except Exception as e:
             logging.error(e)
+
+def clear_input_buffer():
+    old_settings = termios.tcgetattr(sys.stdin)
+    tty.setcbreak(sys.stdin.fileno())
+    try:
+        while True:
+            if select.select([sys.stdin], [], [], 0)[0]:
+                sys.stdin.read(1)
+            else:
+                break
+    finally:
+        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 
 class WebDriver:
     def __init__(self):
@@ -138,15 +152,16 @@ class BerlinBot:
         time.sleep(10)
     
     def _success(self, driver):
-        logging.info("!!!SUCCESS - do not close the window!!!!")
+        logging.info("!!! SUCCESS - do not close the window !!!")
         self.play_sound(self.sound['success'])
-        send_notification("!!Termin Found!!", "Hurry up!")
+        send_notification("!! Termin Found !!", "Hurry up!")
         
         with open("success.txt", "a") as f:
             f.write(f"{datetime.datetime.now().isoformat()}\n")
         logging.info("Press Enter to start over")
+        clear_input_buffer()
         input()
-        logging.info("Pray!")
+        logging.info("Restarting...")
 
 
     def run_once(self, driver):
@@ -195,14 +210,26 @@ class BerlinBot:
 
     def play_sound(self, filename):
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        playsound(os.path.join(dir_path, filename))
+        playsound(os.path.join(dir_path, 'resources', filename))
 
 
 class InputForm(QWidget):
+    def with_completer(self, qt_input):
+        completer = QCompleter(qt_input.model(), self)
+        completer.setFilterMode(Qt.MatchContains)
+        completer.setCaseSensitivity(Qt.CaseInsensitive)
+        qt_input.setCompleter(completer)
+
     def __init__(self):
         super().__init__()
         self.is_start = False
 
+        # Load form options data
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        with open(os.path.join(dir_path, 'resources', 'form-options.json'), "r") as f:
+            form_options = json.load(f)
+
+        # Load last configured form values
         try:
             with open(FORM_FILE, "r") as f:
                 form = json.load(f)
@@ -212,44 +239,65 @@ class InputForm(QWidget):
         layout = QVBoxLayout()
 
         self.citizenship_label = QLabel("Citizenship (required):")
-        self.citizenship_input = QLineEdit()
-        self.citizenship_input.setText(form.get("Citizenship", ""))
+        self.citizenship_input = QComboBox(self)
+        self.citizenship_input.addItems(form_options.get("citizenship"))
+        self.citizenship_input.setCurrentText(form.get("Citizenship", ""))
+        self.citizenship_input.setEditable(True)
+        self.with_completer(self.citizenship_input)
         layout.addWidget(self.citizenship_label)
         layout.addWidget(self.citizenship_input)
 
         self.number_of_applicants_label = QLabel("Number of applicants (required):")
-        self.number_of_applicants_input = QLineEdit()
-        self.number_of_applicants_input.setText(form.get("Number of applicants", ""))
+        self.number_of_applicants_input = QComboBox(self)
+        self.number_of_applicants_input.addItems(form_options.get("numberOfPeople"))
+        self.number_of_applicants_input.setCurrentText(form.get("Number of applicants", ""))
+        self.number_of_applicants_input.setEditable(True)
+        self.with_completer(self.number_of_applicants_input)
         layout.addWidget(self.number_of_applicants_label)
         layout.addWidget(self.number_of_applicants_input)
 
         self.with_family_label = QLabel("Do you live in Berlin with a family member (required):")
-        self.with_family_input = QLineEdit()
-        self.with_family_input.setText(form.get("Do you live in Berlin with a family member", ""))
+        self.with_family_input = QComboBox(self)
+        self.with_family_input.addItems(form_options.get("liveWithFamily"))
+        self.with_family_input.setCurrentText(form.get("Do you live in Berlin with a family member", ""))
+        self.with_family_input.setEditable(True)
+        self.with_completer(self.with_family_input)
         layout.addWidget(self.with_family_label)
         layout.addWidget(self.with_family_input)
 
         self.citizenship_of_the_family_member_label = QLabel("Citizenship of the family member:")
-        self.citizenship_of_the_family_member_input = QLineEdit()
-        self.citizenship_of_the_family_member_input.setText(form.get("Citizenship of the family member", ""))
+        self.citizenship_of_the_family_member_input = QComboBox(self)
+        self.citizenship_of_the_family_member_input.addItems(form_options.get("citizenship"))
+        self.citizenship_of_the_family_member_input.setCurrentText(form.get("Citizenship of the family member", ""))
+        self.citizenship_of_the_family_member_input.setEditable(True)
+        self.with_completer(self.citizenship_of_the_family_member_input)
         layout.addWidget(self.citizenship_of_the_family_member_label)
         layout.addWidget(self.citizenship_of_the_family_member_input)
 
         self.category_label = QLabel("Category (required):")
-        self.category_input = QLineEdit()
-        self.category_input.setText(form.get("Category", ""))
+        self.category_input = QComboBox(self)
+        self.category_input.addItems(form_options.get("category"))
+        self.category_input.setCurrentText(form.get("Category", ""))
+        self.category_input.setEditable(True)
+        self.with_completer(self.category_input)
         layout.addWidget(self.category_label)
         layout.addWidget(self.category_input)
         
         self.subcategory_label = QLabel("Subcategory:")
-        self.subcategory_input = QLineEdit()
-        self.subcategory_input.setText(form.get("Subcategory", ""))
+        self.subcategory_input = QComboBox(self)
+        self.subcategory_input.addItems(form_options.get("subcategory"))
+        self.subcategory_input.setCurrentText(form.get("Subcategory", ""))
+        self.subcategory_input.setEditable(True)
+        self.with_completer(self.subcategory_input)
         layout.addWidget(self.subcategory_label)
         layout.addWidget(self.subcategory_input)
 
         self.option_label = QLabel("Option (required):")
-        self.option_input = QLineEdit()
-        self.option_input.setText(form.get("Option", ""))
+        self.option_input = QComboBox(self)
+        self.option_input.addItems(form_options.get("option"))
+        self.option_input.setCurrentText(form.get("Option", ""))
+        self.option_input.setEditable(True)
+        self.with_completer(self.option_input)
         layout.addWidget(self.option_label)
         layout.addWidget(self.option_input)
 
@@ -258,16 +306,16 @@ class InputForm(QWidget):
         layout.addWidget(self.start_button)
 
         self.setLayout(layout)
-        self.setWindowTitle("Your application")
+        self.setWindowTitle("Book LEA appointment")
 
     def start(self):
-        cityzenship = self.citizenship_input.text()
-        number_of_applicants = self.number_of_applicants_input.text()
-        with_family = self.with_family_input.text()
-        citizenship_of_the_family_member = self.citizenship_of_the_family_member_input.text()
-        category = self.category_input.text()
-        subcategory = self.subcategory_input.text()
-        option = self.option_input.text()
+        cityzenship = self.citizenship_input.currentText()
+        number_of_applicants = self.number_of_applicants_input.currentText()
+        with_family = self.with_family_input.currentText()
+        citizenship_of_the_family_member = self.citizenship_of_the_family_member_input.currentText()
+        category = self.category_input.currentText()
+        subcategory = self.subcategory_input.currentText()
+        option = self.option_input.currentText()
     
         if not cityzenship or not number_of_applicants or not with_family or not category or not option:
             return
