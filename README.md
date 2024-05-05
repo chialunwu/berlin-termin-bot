@@ -1,6 +1,18 @@
 <img width="255" alt="Screenshot 2024-05-02 at 00 10 34" src="https://github.com/chialunwu/berlin-auslanderbehorde-termin-bot/assets/4144711/fea0cf5a-24ca-45ec-87ea-e779aa2fd275">
 
-# Effortlessly book Ausländerbehörde appointments — No technical skills needed!
+# Book a Berlin LEA appointment without wasting your precious time
+
+No technical skills needed!
+
+<a href="">
+  <img src="resources/download-macos-apple-chip.png" alt="Donate for macOS (apple chip)" width=200 />
+</a>
+<a href="">
+  <img src="resources/download-macos-intel-chip.png" alt="Donate for macOS (intel chip)" width=200 />
+</a>
+<a href="">
+  <img src="resources/download-windows.png" alt="Donate for Windows" width=200 />
+</a>
 
 ## What is this?
 
