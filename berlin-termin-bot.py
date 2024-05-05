@@ -25,7 +25,262 @@ from PyQt5.QtCore import Qt
 FORM_FILE = os.path.join(os.sep,'tmp', 'berlin_bot_form.json')
 retry_seconds = 15
 system = system()
-
+FORM_OPTIONS = {
+  "citizenship": [
+    "Afghanistan",
+    "African States, Other",
+    "Albania",
+    "Algeria",
+    "American States, other",
+    "Andorra",
+    "Angola",
+    "Antigua and Barbuda",
+    "Argentina",
+    "Armenia",
+    "Asian States, other",
+    "Australia",
+    "Australian States, other",
+    "Azerbaijan",
+    "Bahamas",
+    "Bahrain",
+    "Bangladesh",
+    "Barbados",
+    "Belarus",
+    "Belize",
+    "Benin",
+    "Bhutan",
+    "Bolivia",
+    "Bosnia and Herzegovina",
+    "Botswana",
+    "Brazil",
+    "British Overseas Territory in Africa",
+    "British Overseas Territory in America",
+    "British Overseas Territory in Asia",
+    "British Overseas Territory in Australia",
+    "British Overseas Territory in Europe",
+    "Brunei Darussalam",
+    "Burkina Faso",
+    "Burundi",
+    "Cambodia",
+    "Cameroons",
+    "Canada",
+    "Cape Verde",
+    "Central African Republic",
+    "Chad",
+    "Chile",
+    "China",
+    "Colombia",
+    "Comoros",
+    "Congo, Democratic Republic of",
+    "Congo, Republic",
+    "Cook Islands",
+    "Costa Rica",
+    "Côte d´Ivoire",
+    "Cuba",
+    "Djibouti",
+    "Dominica",
+    "Dominican Republic",
+    "Ecuador",
+    "Egypt",
+    "El Salvador",
+    "Equatorial Guinea",
+    "Eritrea",
+    "Eswatini",
+    "Ethiopia",
+    "European States, other",
+    "Fiji",
+    "Gabon",
+    "Gambia",
+    "Georgia",
+    "Germany",
+    "Ghana",
+    "Great Britain and Northern Ireland",
+    "Grenada",
+    "Guatemala",
+    "Guinea",
+    "Guinea-Bissau",
+    "Guyana",
+    "Haiti",
+    "Honduras",
+    "India",
+    "Indonesia",
+    "Iran, Islamic Republic",
+    "Iraq",
+    "Israel",
+    "Jamaica",
+    "Japan",
+    "Jordan",
+    "Kazakhstan",
+    "Kenya",
+    "Kiribati",
+    "Korea, Democratic People`s Republic ",
+    "Korean Republic ",
+    "Kosovo",
+    "Krygyzstan",
+    "Kuwait",
+    "Laos, Democratic People`s Republic",
+    "Lebanon",
+    "Lesotho",
+    "Liberia",
+    "Libya",
+    "Madagascar",
+    "Malawi",
+    "Malaysia",
+    "Maldives",
+    "Mali",
+    "Marshall Islands",
+    "Mauritania",
+    "Mauritius",
+    "Mexico",
+    "Micronesia, Federal States",
+    "Moldavia, Republic of",
+    "Monaco",
+    "Mongolia",
+    "Montenegro",
+    "Morocco",
+    "Mozambique",
+    "Myanmar",
+    "Namibia",
+    "Nauru",
+    "Nepal",
+    "New Zealand",
+    "Nicaragua",
+    "Niger",
+    "Nigeria",
+    "Niue",
+    "Nortern Mariana Islands",
+    "North Macedonia",
+    "Oman",
+    "Pakistan",
+    "Palau",
+    "Panama",
+    "Papua New Guinea",
+    "Paraguay",
+    "Peru",
+    "Philippines",
+    "Qatar",
+    "Russian Federation",
+    "Rwanda",
+    "Samoa",
+    "San Marino",
+    "Sao Tome and Principe",
+    "Saudi Arabia",
+    "Senegal",
+    "Serbia",
+    "Seychelles",
+    "Sierra Leone",
+    "Singapore",
+    "Solomon Islands",
+    "Somalia",
+    "South Africa",
+    "Southern Sudan",
+    "Sri Lanka",
+    "*stateless",
+    "St. Kitts and Nevis",
+    "St. Lucia",
+    "St. Vincent and the Grenadines",
+    "Sudan",
+    "Suriname",
+    "Switzerland",
+    "Syria (family name A - E)",
+    "Syria (family name F - Z)",
+    "Taiwan",
+    "Tajikistan",
+    "Tanzania, United Republic of",
+    "Thailand",
+    "Timor-Leste",
+    "Togo",
+    "Tonga",
+    "Trinidad and Tobago",
+    "Tunisia",
+    "Turkey",
+    "Turkmenistan",
+    "Tuvalu",
+    "Uganda",
+    "Ukraine",
+    "United Arab Emirates",
+    "United States of America",
+    "*unresolved nationality (Palestinians and Kurds from Lebanon)",
+    "*unresolved nationality / Palestinians from Syria (Family name  A – E)",
+    "*unresolved nationality / Palestinians from Syria (Family name  F – Z)",
+    "Uruguay",
+    "Uzbekistan",
+    "Vanuatu",
+    "Vatican City",
+    "Venezuela",
+    "Vietnam",
+    "Yemen",
+    "Zambia",
+    "Zimbabwe"
+  ],
+  "numberOfPeople": [
+    "one person",
+    "two people",
+    "three people",
+    "four people",
+    "five people",
+    "six people",
+    "seven people",
+    "eight people"
+  ],
+  "liveWithFamily": ["yes", "no"],
+  "category": [
+    "Apply for a residence title",
+    "Extend a residence title",
+    "Transfer of a Residence title to a new passport",
+    "Apply for a permanent settlement permit",
+    "Passport substitute - Reissue",
+    "Aufenthaltsgestattung (asylum procedure) - Extension",
+    "Temporary suspension of deportation (Duldung) - Extension"
+  ],
+  "subcategory": [
+    "Educational purposes",
+    "Economic activity",
+    "Family reasons",
+    "Humanitarian grounds",
+    "Special rights of residence"
+  ],
+  "option": [
+    "Residence permit for attending a language course (sect. 16f para. 1)",
+    "Residence permit for in-service training (sect. 16a)",
+    "Residence permit for study preparation (sect. 16b para. 1)",
+    "Residence permit for the purpose of studying (sect. 16b)",
+    "Residence permit for the recognition of a foreign professional qualification in a non-regulated profession (§ 16d para. 3)",
+    "Residence permit for the recognition of a foreign professional qualification in a non-regulated profession (sect. 16d para. 1)",
+    "Residence permit for vocational training (sect. 16a)",
+    "Residence permit to start a traineeship (sect. 19c para. 1)",
+    "Residence permit to take part in a student exchange or to attend school (sect. 16f)",
+    "Residence permit for a freelance employment - Issuance (sect. 21 para. 5)",
+    "Residence permit for foreigners with a long-term residence in an EU member state (sect. 38a)",
+    "Residence permit for job-seeking qualified skilled workers – Issuance (sect. 20)",
+    "Residence permit for participation in a voluntary service (sect. 19c or 19e)",
+    "Residence permit for qualified skilled workers with an academic education (sect. 18b)",
+    "Residence permit for qualified skilled workers with vocational training (sect. 18a)",
+    "Residence permit for scientific staff and research workers (sect. 18d)",
+    "Residence permit for the purpose of self-employment - Issuance (sect. 21)",
+    "Residence permit to start an employment as an Au-pair (sect. 19c para. 1)",
+    "Residence permit for a newborn foreign child - Initial issuance (section 33)",
+    "Residence permit for spouses and children of holders of an EU Blue Card (sect. 29-32)",
+    "Residence permit for spouses and children of skilled workers, students, trainees, scientists and teachers (sect. 29-32)",
+    "Residence permit for spouses, parents and children of foreign citizens (sect. 29-34)",
+    "Residence permit for spouses, parents and children of German citizens (sect. 28)",
+    "Residence permit for spouses, parents and children of persons eligible for subsidiary protection (sect. 36a)",
+    "Residence card for family members of EU (except Germany) and EEA citizens",
+    "Residence permit for freelancers and self-employed persons - Extension (sect. 21)",
+    "Residence permit in cases of hardship - extension (sect. 23a)",
+    "Residence permit issued on humanitarian grounds - Extension (sect. 22 - 25)",
+    "Transfer of a Blue Card EU to a new passport",
+    "Transfer of a permanent settlement permit or an EU long-term residence permit to a new passport",
+    "Transfer of a residence card or permanent residence card to a new passport",
+    "Transfer of a residence permit to a new passport",
+    "Permanent residence card for family members of EU (except Germany) and EEA citizens",
+    "Permanent settlement permit for children (sect. 35)",
+    "Permanent settlement permit for family members of German citizens (sect. 28 para. 2)",
+    "Travel document for foreigners (Reiseausweis) - Reissue",
+    "Permission to reside (Aufenthaltsgestattung) - Extension",
+    "Temporary suspension of deportation (Duldung) - Extension"
+  ]
+}
 logging.basicConfig(
     format='%(asctime)s\t%(levelname)s\t%(message)s',
     level=logging.INFO,
@@ -155,9 +410,6 @@ class BerlinBot:
         logging.info("!!! SUCCESS - do not close the window !!!")
         self.play_sound(self.sound['success'])
         send_notification("!! Termin Found !!", "Hurry up!")
-        
-        with open("success.txt", "a") as f:
-            f.write(f"{datetime.datetime.now().isoformat()}\n")
         logging.info("Press Enter to start over")
         clear_input_buffer()
         input()
@@ -210,7 +462,7 @@ class BerlinBot:
 
     def play_sound(self, filename):
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        playsound(os.path.join(dir_path, 'resources', filename))
+        playsound(os.path.join(dir_path, filename))
 
 
 class InputForm(QWidget):
@@ -226,8 +478,6 @@ class InputForm(QWidget):
 
         # Load form options data
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        with open(os.path.join(dir_path, 'resources', 'form-options.json'), "r") as f:
-            form_options = json.load(f)
 
         # Load last configured form values
         try:
@@ -240,7 +490,7 @@ class InputForm(QWidget):
 
         self.citizenship_label = QLabel("Citizenship (required):")
         self.citizenship_input = QComboBox(self)
-        self.citizenship_input.addItems(form_options.get("citizenship"))
+        self.citizenship_input.addItems(FORM_OPTIONS.get("citizenship"))
         self.citizenship_input.setCurrentText(form.get("Citizenship", ""))
         self.citizenship_input.setEditable(True)
         self.with_completer(self.citizenship_input)
@@ -249,7 +499,7 @@ class InputForm(QWidget):
 
         self.number_of_applicants_label = QLabel("Number of applicants (required):")
         self.number_of_applicants_input = QComboBox(self)
-        self.number_of_applicants_input.addItems(form_options.get("numberOfPeople"))
+        self.number_of_applicants_input.addItems(FORM_OPTIONS.get("numberOfPeople"))
         self.number_of_applicants_input.setCurrentText(form.get("Number of applicants", ""))
         self.number_of_applicants_input.setEditable(True)
         self.with_completer(self.number_of_applicants_input)
@@ -258,7 +508,7 @@ class InputForm(QWidget):
 
         self.with_family_label = QLabel("Do you live in Berlin with a family member (required):")
         self.with_family_input = QComboBox(self)
-        self.with_family_input.addItems(form_options.get("liveWithFamily"))
+        self.with_family_input.addItems(FORM_OPTIONS.get("liveWithFamily"))
         self.with_family_input.setCurrentText(form.get("Do you live in Berlin with a family member", ""))
         self.with_family_input.setEditable(True)
         self.with_completer(self.with_family_input)
@@ -267,7 +517,7 @@ class InputForm(QWidget):
 
         self.citizenship_of_the_family_member_label = QLabel("Citizenship of the family member:")
         self.citizenship_of_the_family_member_input = QComboBox(self)
-        self.citizenship_of_the_family_member_input.addItems(form_options.get("citizenship"))
+        self.citizenship_of_the_family_member_input.addItems(FORM_OPTIONS.get("citizenship"))
         self.citizenship_of_the_family_member_input.setCurrentText(form.get("Citizenship of the family member", ""))
         self.citizenship_of_the_family_member_input.setEditable(True)
         self.with_completer(self.citizenship_of_the_family_member_input)
@@ -276,7 +526,7 @@ class InputForm(QWidget):
 
         self.category_label = QLabel("Category (required):")
         self.category_input = QComboBox(self)
-        self.category_input.addItems(form_options.get("category"))
+        self.category_input.addItems(FORM_OPTIONS.get("category"))
         self.category_input.setCurrentText(form.get("Category", ""))
         self.category_input.setEditable(True)
         self.with_completer(self.category_input)
@@ -285,7 +535,7 @@ class InputForm(QWidget):
         
         self.subcategory_label = QLabel("Subcategory:")
         self.subcategory_input = QComboBox(self)
-        self.subcategory_input.addItems(form_options.get("subcategory"))
+        self.subcategory_input.addItems(FORM_OPTIONS.get("subcategory"))
         self.subcategory_input.setCurrentText(form.get("Subcategory", ""))
         self.subcategory_input.setEditable(True)
         self.with_completer(self.subcategory_input)
@@ -294,7 +544,7 @@ class InputForm(QWidget):
 
         self.option_label = QLabel("Option (required):")
         self.option_input = QComboBox(self)
-        self.option_input.addItems(form_options.get("option"))
+        self.option_input.addItems(FORM_OPTIONS.get("option"))
         self.option_input.setCurrentText(form.get("Option", ""))
         self.option_input.setEditable(True)
         self.with_completer(self.option_input)
@@ -357,4 +607,3 @@ if __name__ == "__main__":
                 print(e)
                 bot.play_sound(sound['error'])
                 time.sleep(10)
-

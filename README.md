@@ -1,6 +1,4 @@
-
 <img width="255" alt="Screenshot 2024-05-02 at 00 10 34" src="https://github.com/chialunwu/berlin-auslanderbehorde-termin-bot/assets/4144711/fea0cf5a-24ca-45ec-87ea-e779aa2fd275">
-
 
 # Effortlessly book Ausländerbehörde appointments — No technical skills needed!
 
@@ -57,7 +55,6 @@ cd dist
 zip -r ../downloads/macos/applechip/berlin-termin-bot.zip berlin-termin-bot
 cd ..
 ```
-
 
 ## Support ❤️
 
