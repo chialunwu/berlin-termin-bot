@@ -5,13 +5,13 @@
 No technical skills needed!
 
 <a href="">
-  <img src="resources/download-macos-apple-chip.png" alt="Donate for macOS (apple chip)" width=200 />
+  <img src="resources/download-macos-apple-chip.png" alt="Download for macOS (apple chip)" width=200 />
 </a>
 <a href="">
-  <img src="resources/download-macos-intel-chip.png" alt="Donate for macOS (intel chip)" width=200 />
+  <img src="resources/download-macos-intel-chip.png" alt="Download for macOS (intel chip)" width=200 />
 </a>
 <a href="">
-  <img src="resources/download-windows.png" alt="Donate for Windows" width=200 />
+  <img src="resources/download-windows.png" alt="Download for Windows" width=200 />
 </a>
 
 ## What is this?
@@ -22,11 +22,9 @@ This bot automates the manual steps for you. You just need to fill out the initi
 
 ## How to use?
 
-1. Download `berlin-termin-bot.zip` in [downloads](downloads/macos)
-   - macOS only
-   - For Windows users, please see the 'Development' section below
+1. Download `berlin-termin-bot.zip` in [downloads](downloads)
 2. Unzip the file
-3. Right-click the program and click 'Open' to run it (Don't double-click)
+3. Right-click the program (`berlin-termin-bot`) and click 'Open' to run it (Don't double-click)
 4. Fill out the form and click 'Good luck' button to start (see the screenshot below)
 5. Wait for the alarm/notification
 6. If you hear the alarm, rush to select the day and time and solve the reCAPTCHA. If the time dropdown is empty, it means it's gone. Go to the Terminal window and hit 'Enter' to start over.
@@ -57,15 +55,9 @@ python3 berlin-termin-bot.py
 ### To package
 
 ```
-rm -rf dist build
-rm -f downloads/macos/applechip/*
-pyinstaller --paths venv/lib/python3.11/site-packages/ \
-    --onefile \
-    --add-data="*.mp3:." \
-    berlin-termin-bot.py
-cd dist
-zip -r ../downloads/macos/applechip/berlin-termin-bot.zip berlin-termin-bot
-cd ..
+make build_macos-applechip
+make build_macos-intelchip
+make build_windows
 ```
 
 ## Support ❤️
