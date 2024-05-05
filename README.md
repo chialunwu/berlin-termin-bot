@@ -11,6 +11,18 @@ No technical skills needed!
   <img src="resources/download-macos-intel-chip.png" alt="Download for macOS (intel chip)" width=400 />
 </a>
 
+<br/>
+<br/>
+<div>
+  <a href="https://www.loom.com/share/36408247f4234b4083509450a3db2928">
+    <p>Watch demo</p>
+  </a>
+  <a href="https://www.loom.com/share/36408247f4234b4083509450a3db2928">
+    <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/36408247f4234b4083509450a3db2928-with-play.gif">
+  </a>
+</div>
+
+
 ## What is this?
 
 This bot helps you book an appointment from https://otv.verwalt-berlin.de/ams/TerminBuchen.
