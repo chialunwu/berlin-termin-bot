@@ -7,11 +7,12 @@ DOWNLOAD_DIR_MACOS_APPLE = downloads/macos/applechip
 DOWNLOAD_DIR_WINDOWS = downloads/windows
 SRC_FILE = berlin-termin-bot.py
 OUTPUT_FILE = berlin-termin-bot
+INSTRUCTION_FILE = instructions.txt
 PYINSTALLER = pyinstaller
 ZIP_CMD = zip -r
-ZIP_OUTPUT_MACOS_APPLE = ../$(DOWNLOAD_DIR_MACOS_APPLE)/$(OUTPUT_FILE).zip
-ZIP_OUTPUT_MACOS_INTEL = ../$(DOWNLOAD_DIR_MACOS_INTEL)/$(OUTPUT_FILE).zip
-ZIP_OUTPUT_WINDOWS = ../$(DOWNLOAD_DIR_WINDOWS)/$(OUTPUT_FILE).zip
+ZIP_OUTPUT_MACOS_APPLE = $(DOWNLOAD_DIR_MACOS_APPLE)/$(OUTPUT_FILE).zip
+ZIP_OUTPUT_MACOS_INTEL = $(DOWNLOAD_DIR_MACOS_INTEL)/$(OUTPUT_FILE).zip
+ZIP_OUTPUT_WINDOWS = $(DOWNLOAD_DIR_WINDOWS)/$(OUTPUT_FILE).zip
 ADD_DATA = "*.mp3:."
 PYTHON_SITE_PACKAGES = $(VENV_DIR)/lib/python3.11/site-packages/
 
@@ -32,18 +33,19 @@ install:
 build: install
 	rm -rf $(DIST_DIR) $(BUILD_DIR)
 	$(PYINSTALLER) --paths $(PYTHON_SITE_PACKAGES) --onefile --add-data=$(ADD_DATA) $(SRC_FILE)
+	cp $(DIST_DIR)/$(OUTPUT_FILE) $(OUTPUT_FILE)
 
 build_macos-applechip: build
 	rm -f $(DOWNLOAD_DIR_MACOS_APPLE)/*
-	cd $(DIST_DIR) && $(ZIP_CMD) $(ZIP_OUTPUT_MACOS_APPLE) $(OUTPUT_FILE)
+	$(ZIP_CMD) $(ZIP_OUTPUT_MACOS_APPLE) $(OUTPUT_FILE) $(INSTRUCTION_FILE)
 	@echo "Build and packaging complete for macOS Apple chip. ZIP file created at $(ZIP_OUTPUT_MACOS_APPLE)."
 
 build_macos-intelchip: build
 	rm -f $(DOWNLOAD_DIR_MACOS_INTEL)/*
-	cd $(DIST_DIR) && $(ZIP_CMD) $(ZIP_OUTPUT_MACOS_INTEL) $(OUTPUT_FILE)
+	$(ZIP_CMD) $(ZIP_OUTPUT_MACOS_INTEL) $(OUTPUT_FILE) $(INSTRUCTION_FILE)
 	@echo "Build and packaging complete for macOS Intel chip. ZIP file created at $(ZIP_OUTPUT_MACOS_INTEL)."
 
 build_windows: build
 	rm -f $(DOWNLOAD_DIR_WINDOWS)/*
-	cd $(DIST_DIR) && $(ZIP_CMD) $(ZIP_OUTPUT_WINDOWS) $(OUTPUT_FILE)
+	$(ZIP_CMD) $(ZIP_OUTPUT_WINDOWS) $(OUTPUT_FILE) $(INSTRUCTION_FILE)
 	@echo "Build and packaging complete for windows. ZIP file created at $(ZIP_OUTPUT_WINDOWS)."
