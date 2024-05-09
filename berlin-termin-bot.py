@@ -5,27 +5,31 @@ import select
 import time
 import platform
 import os
-import datetime
 import logging
 import json
+import threading
+import queue
+
 from platform import system
 from playsound import playsound
 
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
-from selenium.common.exceptions import NoAlertPresentException
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QComboBox, QCompleter
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QComboBox, QCompleter
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
 
 
-FORM_FILE = os.path.join(os.sep,'tmp', 'berlin_bot_form.json')
-retry_seconds = 15
+SOUND = {
+    "start": "start.mp3",
+    "success": "alarm.mp3",
+    "error": "error.mp3"
+}
 system = system()
-FORM_OPTIONS = {
+IMMIGRATION_FORM_OPTIONS = {
   "citizenship": [
     "Afghanistan",
     "African States, Other",
@@ -306,6 +310,39 @@ def clear_input_buffer():
     finally:
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 
+def get_input(q):
+    try:
+        user_input = input()
+        q.put(user_input)
+    except EOFError:
+        q.put(None)
+
+def input_with_timeout(prompt, timeout):
+    clear_input_buffer()
+    q = queue.Queue()
+    thread = threading.Thread(target=get_input, args=(q,))
+    thread.start()
+    try:
+        logging.info(prompt)
+        user_input = q.get(timeout=timeout)
+    except queue.Empty:
+        logging.warning("Input timeout reached. Continuing with program...")
+        user_input = None
+    thread.join(timeout=0.1)
+    return user_input
+
+
+def load_form(filepath):
+    try:
+        with open(filepath, "r") as f:
+            return json.load(f)
+    except:
+        return {}
+    
+def update_form(filepath, form):
+    with open(filepath, "w") as f:
+        json.dump(form, f)
+
 class WebDriver:
     def __init__(self):
         self._driver: webdriver.Chrome
@@ -334,20 +371,21 @@ class WebDriver:
         self._driver.execute_script("window.onbeforeunload = null;")
         self._driver.quit()
 
-class BerlinBot:
-    def __init__(self, form, sound):
+class BerlinImmigrationOfficeBot:
+    def __init__(self, form):
         self.form = form
-        self.sound = sound
+        self.retry_seconds = 15
+        self.attempts = 0
 
     def enter_start_page(self, driver: webdriver.Chrome):
-        logging.info("Visit start page")
+        logging.info("Visiting start page")
         driver.execute_script("window.onbeforeunload = null;")
         driver.execute_script("window.alert = function() {};")
         driver.get("https://otv.verwalt-berlin.de/ams/TerminBuchen?lang=en")
         driver.find_element(By.XPATH, "//*[text()='Book Appointment']").click()
         time.sleep(5)
 
-    def tick_off_some_bullshit(self, driver: webdriver.Chrome):
+    def tick_off_agreement(self, driver: webdriver.Chrome):
         logging.info("Ticking off agreement")
         driver.find_element(By.XPATH, "//*[contains(text(),'I hereby declare')]").click()
         for i in range(5):
@@ -358,7 +396,7 @@ class BerlinBot:
                 time.sleep(2)
 
     def enter_form(self, driver: webdriver.Chrome):
-        logging.info("Fill out form")
+        logging.info("Filling out form")
         time.sleep(5)
         for i in range(10):
             try:
@@ -406,23 +444,22 @@ class BerlinBot:
                 time.sleep(2)
         time.sleep(10)
     
-    def _success(self, driver):
+    def _success(self):
         logging.info("!!! SUCCESS - do not close the window !!!")
-        self.play_sound(self.sound['success'])
-        send_notification("!! Termin Found !!", "Hurry up!")
-        logging.info("Press Enter to start over")
-        clear_input_buffer()
-        input()
+        self.play_sound(SOUND['success'])
+        send_notification("!! Immigration Office Termin Found !!", "Hurry up!")
+        input_with_timeout("Press Enter to start over (5 minute timeout)", 300)
         logging.info("Restarting...")
 
 
     def run_once(self, driver):
         self.enter_start_page(driver)
-        self.tick_off_some_bullshit(driver)
+        self.tick_off_agreement(driver)
         self.enter_form(driver)
 
-        # retry submit
-        for i in range(500 // retry_seconds):
+        for _ in range(500 // self.retry_seconds):
+            logging.info(f"Attempt: {self.attempts} (retry in {self.retry_seconds} seconds)")
+            self.attempts += 1
             for _ in range(3):
                 active_tab = driver.find_element(By.CLASS_NAME, "antcl_active").text
                 if active_tab:
@@ -441,13 +478,12 @@ class BerlinBot:
                     if j == 2:
                         raise e
                     time.sleep(2)
-            time.sleep(retry_seconds)
-            logging.info(f"Retry - {i}")
+            time.sleep(self.retry_seconds)
         return False
 
     def run_loop(self):
         with WebDriver() as driver:
-            self.play_sound(self.sound['start'])
+            self.play_sound(SOUND['start'])
             while True:
                 try:
                     success = self.run_once(driver)
@@ -456,7 +492,7 @@ class BerlinBot:
                 except Exception as e:
                     if 'Alert' in str(e):
                         raise e
-                    self.play_sound(sound['error'])
+                    self.play_sound(SOUND['error'])
                 finally:
                     time.sleep(10)
 
@@ -464,27 +500,76 @@ class BerlinBot:
         dir_path = os.path.dirname(os.path.realpath(__file__))
         playsound(os.path.join(dir_path, filename))
 
+class BerlinCitizenOfficeBot:
+    def __init__(self, url):
+        self.retry_seconds = 50
+        self.url = url
 
-class InputForm(QWidget):
+    def enter_start_page(self, driver: webdriver.Chrome):
+        driver.execute_script("window.onbeforeunload = null;")
+        driver.execute_script("window.alert = function() {};")
+        driver.get(self.url)
+        driver.implicitly_wait(10)
+    
+    def _success(self):
+        logging.info("!!! SUCCESS - do not close the window !!!")
+        self.play_sound(SOUND['success'])
+        send_notification("!! Bürgeramt Termin Found !!", "Hurry up!")
+        input_with_timeout("Press Enter to start over (5 minute timeout)", 300)
+        logging.info("Restarting...")
+
+
+    def run_once(self, driver):
+        self.enter_start_page(driver)
+        try:
+            
+            element = driver.find_element(By.XPATH, f"//*[contains(text(),'Bitte wählen Sie ein Datum')]")
+            if element:
+                self._success()
+                return True
+        except:
+            pass
+        
+    def run_loop(self):
+        with WebDriver() as driver:
+            self.play_sound(SOUND['start'])
+            logging.info(f"Checking {self.url} every 60 seconds (checking more frequently could get you blocked for 1 hour)")
+            attempts = 0
+            while True:
+                try:
+                    logging.info(f"Attempt: {attempts} (retry in 60 seconds)")
+                    success = self.run_once(driver)
+                    if not success:
+                        time.sleep(self.retry_seconds)
+                except Exception as e:
+                    self.play_sound(SOUND['error'])
+                    time.sleep(10)
+                finally:
+                    attempts += 1
+
+    def play_sound(self, filename):
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        playsound(os.path.join(dir_path, filename))
+
+class LEAInputForm(QWidget):
+    FORM_FILE = os.path.join(os.sep,'tmp', 'berlin_bot_form.json')
+
     def with_completer(self, qt_input):
         completer = QCompleter(qt_input.model(), self)
         completer.setFilterMode(Qt.MatchContains)
         completer.setCaseSensitivity(Qt.CaseInsensitive)
+        completer.popup().setFont(qt_input.font())
         qt_input.setCompleter(completer)
 
     def __init__(self):
         super().__init__()
-        self.is_start = False
 
-        # Load form options data
-        dir_path = os.path.dirname(os.path.realpath(__file__))
+        font = QFont()
+        font.setPointSize(14)
+        self.setFont(font)
+        self.form = None
 
-        # Load last configured form values
-        try:
-            with open(FORM_FILE, "r") as f:
-                form = json.load(f)
-        except:
-            form = {}
+        self.form = load_form(LEAInputForm.FORM_FILE)
 
         layout = QVBoxLayout()
 
@@ -492,8 +577,8 @@ class InputForm(QWidget):
         self.citizenship_input = QComboBox(self)
         self.citizenship_input.setEditable(True)
         self.with_completer(self.citizenship_input)
-        self.citizenship_input.addItems(FORM_OPTIONS.get("citizenship"))
-        self.citizenship_input.setCurrentText(form.get("Citizenship", ""))
+        self.citizenship_input.addItems(IMMIGRATION_FORM_OPTIONS.get("citizenship"))
+        self.citizenship_input.setCurrentText(self.form.get("Citizenship", ""))
         layout.addWidget(self.citizenship_label)
         layout.addWidget(self.citizenship_input)
 
@@ -501,8 +586,8 @@ class InputForm(QWidget):
         self.number_of_applicants_input = QComboBox(self)
         self.number_of_applicants_input.setEditable(True)
         self.with_completer(self.number_of_applicants_input)
-        self.number_of_applicants_input.addItems(FORM_OPTIONS.get("numberOfPeople"))
-        self.number_of_applicants_input.setCurrentText(form.get("Number of applicants", ""))
+        self.number_of_applicants_input.addItems(IMMIGRATION_FORM_OPTIONS.get("numberOfPeople"))
+        self.number_of_applicants_input.setCurrentText(self.form.get("Number of applicants", ""))
         layout.addWidget(self.number_of_applicants_label)
         layout.addWidget(self.number_of_applicants_input)
 
@@ -510,17 +595,17 @@ class InputForm(QWidget):
         self.with_family_input = QComboBox(self)
         self.with_family_input.setEditable(True)
         self.with_completer(self.with_family_input)
-        self.with_family_input.addItems(FORM_OPTIONS.get("liveWithFamily"))
-        self.with_family_input.setCurrentText(form.get("Do you live in Berlin with a family member", ""))
+        self.with_family_input.addItems(IMMIGRATION_FORM_OPTIONS.get("liveWithFamily"))
+        self.with_family_input.setCurrentText(self.form.get("Do you live in Berlin with a family member", ""))
         layout.addWidget(self.with_family_label)
         layout.addWidget(self.with_family_input)
 
-        self.citizenship_of_the_family_member_label = QLabel("Citizenship of the family member:")
+        self.citizenship_of_the_family_member_label = QLabel("Citizenship of the family member (optional):")
         self.citizenship_of_the_family_member_input = QComboBox(self)
         self.citizenship_of_the_family_member_input.setEditable(True)
         self.with_completer(self.citizenship_of_the_family_member_input)
-        self.citizenship_of_the_family_member_input.addItems(FORM_OPTIONS.get("citizenship"))
-        self.citizenship_of_the_family_member_input.setCurrentText(form.get("Citizenship of the family member", ""))
+        self.citizenship_of_the_family_member_input.addItems(IMMIGRATION_FORM_OPTIONS.get("citizenship"))
+        self.citizenship_of_the_family_member_input.setCurrentText(self.form.get("Citizenship of the family member", ""))
         layout.addWidget(self.citizenship_of_the_family_member_label)
         layout.addWidget(self.citizenship_of_the_family_member_input)
 
@@ -528,17 +613,17 @@ class InputForm(QWidget):
         self.category_input = QComboBox(self)
         self.category_input.setEditable(True)
         self.with_completer(self.category_input)
-        self.category_input.addItems(FORM_OPTIONS.get("category"))
-        self.category_input.setCurrentText(form.get("Category", ""))
+        self.category_input.addItems(IMMIGRATION_FORM_OPTIONS.get("category"))
+        self.category_input.setCurrentText(self.form.get("Category", ""))
         layout.addWidget(self.category_label)
         layout.addWidget(self.category_input)
         
-        self.subcategory_label = QLabel("Subcategory:")
+        self.subcategory_label = QLabel("Subcategory (optional):")
         self.subcategory_input = QComboBox(self)
         self.subcategory_input.setEditable(True)
         self.with_completer(self.subcategory_input)
-        self.subcategory_input.addItems(FORM_OPTIONS.get("subcategory"))
-        self.subcategory_input.setCurrentText(form.get("Subcategory", ""))
+        self.subcategory_input.addItems(IMMIGRATION_FORM_OPTIONS.get("subcategory"))
+        self.subcategory_input.setCurrentText(self.form.get("Subcategory", ""))
         layout.addWidget(self.subcategory_label)
         layout.addWidget(self.subcategory_input)
 
@@ -546,17 +631,18 @@ class InputForm(QWidget):
         self.option_input = QComboBox(self)
         self.option_input.setEditable(True)
         self.with_completer(self.option_input)
-        self.option_input.addItems(FORM_OPTIONS.get("option"))
-        self.option_input.setCurrentText(form.get("Option", ""))
+        self.option_input.addItems(IMMIGRATION_FORM_OPTIONS.get("option"))
+        self.option_input.setCurrentText(self.form.get("Option", ""))
         layout.addWidget(self.option_label)
         layout.addWidget(self.option_input)
 
-        self.start_button = QPushButton("Good luck")
+        self.start_button = QPushButton("Start")
         self.start_button.clicked.connect(self.start)
+        self.start_button.setFixedHeight(40)
+        layout.addSpacing(20)
         layout.addWidget(self.start_button)
 
         self.setLayout(layout)
-        self.setWindowTitle("Book LEA appointment")
 
     def start(self):
         cityzenship = self.citizenship_input.currentText()
@@ -570,7 +656,7 @@ class InputForm(QWidget):
         if not cityzenship or not number_of_applicants or not with_family or not category or not option:
             return
         
-        form = {
+        self.form = {
             "Citizenship": cityzenship,
             "Number of applicants": number_of_applicants,
             "Do you live in Berlin with a family member": with_family,
@@ -579,31 +665,134 @@ class InputForm(QWidget):
             "Subcategory": subcategory,
             "Option": option,
         }
-        with open(FORM_FILE, "w") as f:
-            json.dump(form, f)
-        self.is_start = True
+        update_form(LEAInputForm.FORM_FILE, self.form)
+
+class OtherInputForm(QWidget):
+    FORM_FILE = os.path.join(os.sep,'tmp', 'other_form.json')
+
+    def __init__(self):
+        super().__init__()
+
+        font = QFont()
+        font.setPointSize(14)
+        self.setFont(font)
+
+        form = load_form(OtherInputForm.FORM_FILE)
+        self.url = None
+
+        layout = QVBoxLayout()
+        self.url_label = QLabel(f"Service URL (required):\n\n" + "For example, for the service - https://service.berlin.de/dienstleistung/120686/,\nright click the 'Berlinweite Terminbuchung' button and click 'Copy Link Address'")
+        self.url_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        self.url_input = QComboBox(self)
+        self.url_input.setEditable(True)
+        self.url_input.setCurrentText(form.get("url", ""))
+        layout.addWidget(self.url_label)
+        layout.addWidget(self.url_input)
+
+        self.start_button = QPushButton("Start")
+        self.start_button.clicked.connect(self.start)
+        self.start_button.setFixedHeight(40)
+        layout.addWidget(self.start_button)
+        self.setLayout(layout)
+
+    def start(self):
+        self.url = self.url_input.currentText()
+        if not self.url:
+            return
+        update_form(OtherInputForm.FORM_FILE, {"url": self.url})
+
+class EntryForm(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        font = QFont()
+        font.setPointSize(18)
+        self.button_immigration = QPushButton("Immigration Office 🛂", self)
+        self.button_immigration.setFixedHeight(40)
+        self.button_immigration.setFont(font)
+        self.button_anmeldung = QPushButton("Anmeldung einer Wohnung 🏠", self)
+        self.button_anmeldung.setFixedHeight(40)
+        self.button_anmeldung.setFont(font)
+        self.button_other = QPushButton("Other Bürgeramt services", self)
+        self.button_other.setFixedHeight(40)
+        self.button_other.setFont(font)
+
+        self.form_immigration = LEAInputForm()
+        self.form_immigration.setVisible(False)
+        self.form_other = OtherInputForm()
+        self.form_other.setVisible(False)
+
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.button_immigration)
+        layout.addSpacing(20)
+        layout.addWidget(self.button_anmeldung)
+        layout.addWidget(self.form_immigration)
+        layout.addWidget(self.form_other)
+        layout.addSpacing(20)
+        layout.addWidget(self.button_other)
+        self.setLayout(layout)
+
+        self.button_immigration.clicked.connect(self.show_form_immigration)
+        self.button_anmeldung.clicked.connect(self.start_anmeldung)
+        self.button_other.clicked.connect(self.show_form_other)
+        self.immigration_form = None
+        self.citizen_service_url = None
+
+        self.setContentsMargins(70, 70, 70, 70)
+        self.setWindowTitle("Berlin Termin Bot")
+
+    def hide_buttons(self):
+        self.button_immigration.setVisible(False)
+        self.button_anmeldung.setVisible(False)
+        self.button_other.setVisible(False)
+
+    def show_form_immigration(self):
+        self.setContentsMargins(0, 0, 0, 0)
+        self.form_immigration.setVisible(True)
+        self.form_immigration.start_button.clicked.connect(self.start_immigration)
+        self.hide_buttons()
+    
+    def show_form_other(self):
+        self.setContentsMargins(0, 0, 0, 0)
+        self.form_other.setVisible(True)
+        self.form_other.start_button.clicked.connect(self.start_other)
+        self.hide_buttons()
+
+    def start_immigration(self):
+        if self.form_immigration.form:
+            self.immigration_form = self.form_immigration.form
+            self.close()
+
+    def start_anmeldung(self):
+        self.citizen_service_url = "https://service.berlin.de/terminvereinbarung/termin/all/120686/"
         self.close()
+
+    def start_other(self):
+        if self.form_other.url:
+            self.citizen_service_url = self.form_other.url
+            self.close()
 
 if __name__ == "__main__":
     app = QApplication([])
-    input_form = InputForm()
-    input_form.show()
+    entry_form = EntryForm()
+    entry_form.show()
     app.exec_()
 
-    if input_form.is_start:
-        with open(FORM_FILE, "r") as f:
-            form = json.load(f)
-        form = {k: v.strip() for k, v in form.items()}
-        sound = {
-            "start": "start.mp3",
-            "success": "alarm.mp3",
-            "error": "error.mp3"
-        }
-        bot = BerlinBot(form, sound)
+    if entry_form.immigration_form:
+        bot = BerlinImmigrationOfficeBot(entry_form.immigration_form)
         while True:
             try:
                 bot.run_loop()
             except Exception as e:
                 print(e)
-                bot.play_sound(sound['error'])
+                bot.play_sound(SOUND['error'])
+                time.sleep(10)
+    if entry_form.citizen_service_url:
+        bot = BerlinCitizenOfficeBot(entry_form.citizen_service_url)
+        while True:
+            try:
+                bot.run_loop()
+            except Exception as e:
+                print(e)
+                bot.play_sound(SOUND['error'])
                 time.sleep(10)

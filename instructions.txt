@@ -1,7 +1,7 @@
 To run `berlin-termin-bot` (macOS):
 1. Right-click `berlin-termin-bot` file and click 'Open' to run it (Don't double-click)
-2. Fill out the form and click 'Good luck' button to start
+2. Fill out the form and click 'Start'
 3. When you hear the alarm or see the notification, it means there're available time slots. Be quick to book an appointment manually.
 4. Good luck!
 
-For further information, please check https://github.com/chialunwu/berlin-auslanderbehorde-termin-bot
+For further information, please check https://github.com/chialunwu/berlin-termin-bot
