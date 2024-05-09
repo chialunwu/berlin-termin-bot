@@ -780,19 +780,15 @@ if __name__ == "__main__":
 
     if entry_form.immigration_form:
         bot = BerlinImmigrationOfficeBot(entry_form.immigration_form)
-        while True:
-            try:
-                bot.run_loop()
-            except Exception as e:
-                print(e)
-                bot.play_sound(SOUND['error'])
-                time.sleep(10)
-    if entry_form.citizen_service_url:
+    elif entry_form.citizen_service_url:
         bot = BerlinCitizenOfficeBot(entry_form.citizen_service_url)
-        while True:
-            try:
-                bot.run_loop()
-            except Exception as e:
-                print(e)
-                bot.play_sound(SOUND['error'])
-                time.sleep(10)
+    else:
+        sys.exit()
+
+    while True:
+        try:
+            bot.run_loop()
+        except Exception as e:
+            print(e)
+            bot.play_sound(SOUND['error'])
+            time.sleep(10)
