@@ -54,6 +54,7 @@ build_windows: build
 	@echo "Build and packaging complete for windows. ZIP file created at $(ZIP_OUTPUT_WINDOWS)."
 
 release:
+	gh release delete v1.0.0
 	gh release create v1.0.0 --title "v1.0.0" --notes ""
 	gh release upload v1.0.0 'download/macos/applechip/berlin-termin-bot_macosapple.zip#macOS (apple chip)'
 	gh release upload v1.0.0 'download/macos/intelchip/berlin-termin-bot_macosintel.zip#macOS (intel chip)'
