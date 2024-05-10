@@ -4,7 +4,7 @@ BUILD_DIR = build
 DIST_DIR = dist
 DOWNLOAD_DIR_MACOS_INTEL = download/macos/intelchip
 DOWNLOAD_DIR_MACOS_APPLE = download/macos/applechip
-DOWNLOAD_DIR_WINDOWS = download/windows
+DOWNLOAD_DIR_WINDOWS = download\windows
 SRC_FILE = berlin-termin-bot.py
 OUTPUT_FILE = berlin-termin-bot
 INSTRUCTION_FILE = instructions.txt
@@ -12,7 +12,7 @@ PYINSTALLER = pyinstaller
 ZIP_CMD = zip -r
 ZIP_OUTPUT_MACOS_APPLE = $(DOWNLOAD_DIR_MACOS_APPLE)/$(OUTPUT_FILE)_macosapple.zip
 ZIP_OUTPUT_MACOS_INTEL = $(DOWNLOAD_DIR_MACOS_INTEL)/$(OUTPUT_FILE)_macosintel.zip
-ZIP_OUTPUT_WINDOWS = $(DOWNLOAD_DIR_WINDOWS)/$(OUTPUT_FILE)_windows.zip
+ZIP_OUTPUT_WINDOWS = $(DOWNLOAD_DIR_WINDOWS)\$(OUTPUT_FILE)_windows.zip
 ADD_DATA = "*.mp3:."
 PYTHON_SITE_PACKAGES = $(VENV_DIR)/lib/python3.*/site-packages/
 
@@ -26,14 +26,16 @@ help:
 	@echo "  build_windows          - Build application for Windows and create ZIP package."
 
 install:
-	python3 -m venv $(VENV_DIR)
-	source $(VENV_DIR)/bin/activate && pip3 install -r $(REQS_FILE)
+#	python311 -m venv $(VENV_DIR)
+#	$(VENV_DIR)\Scripts\activate && 
+	pip311 install -r $(REQS_FILE)
 	@echo "Installation complete. Virtual environment and dependencies set up."
 
 build: install
-	rm -rf $(DIST_DIR) $(BUILD_DIR)
+	@if exist "$(DIST_DIR)" rmdir /s /q $(DIST_DIR)
+	@if exist "$(BUILD_DIR)" rmdir /s /q $(BUILD_DIR)
 	$(PYINSTALLER) --paths $(PYTHON_SITE_PACKAGES) --onefile --add-data=$(ADD_DATA) $(SRC_FILE)
-	cp $(DIST_DIR)/$(OUTPUT_FILE) $(OUTPUT_FILE)
+	copy $(DIST_DIR)/$(OUTPUT_FILE) $(OUTPUT_FILE)
 
 build_macos-applechip: build
 	mkdir -p $(DOWNLOAD_DIR_MACOS_APPLE)
@@ -48,9 +50,9 @@ build_macos-intelchip: build
 	@echo "Build and packaging complete for macOS Intel chip. ZIP file created at $(ZIP_OUTPUT_MACOS_INTEL)."
 
 build_windows: build
-	mkdir -p $(DOWNLOAD_DIR_WINDOWS)
-	rm -f $(DOWNLOAD_DIR_WINDOWS)/*
-	$(ZIP_CMD) $(ZIP_OUTPUT_WINDOWS) $(OUTPUT_FILE) $(INSTRUCTION_FILE)
+	@if not exist "$(DOWNLOAD_DIR_WINDOWS)" mkdir $(DOWNLOAD_DIR_WINDOWS)
+	del /q $(DOWNLOAD_DIR_WINDOWS)\*
+	powershell Compress-Archive -Path $(OUTPUT_FILE) -DestinationPath $(ZIP_OUTPUT_WINDOWS)
 	@echo "Build and packaging complete for windows. ZIP file created at $(ZIP_OUTPUT_WINDOWS)."
 
 release:
