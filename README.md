@@ -1,8 +1,8 @@
 <img width="255" alt="Screenshot 2024-05-02 at 00 10 34" src="https://github.com/chialunwu/berlin-termin-bot/assets/4144711/fea0cf5a-24ca-45ec-87ea-e779aa2fd275">
 
-# Book a Berlin LEA/Bürgeramt appointment without wasting your precious time
+# Book a Berlin LEA/Bürgeramt appointment without wasting your valuable time
 
-No technical skills needed!
+No technical skills required!
 
 <a href="https://github.com/chialunwu/berlin-termin-bot/releases/download/v1.0.0/berlin-termin-bot_macosapple.zip">
   <img src="resources/download-macos-apple-chip.png" alt="Download for macOS (apple chip)" width=400 />
@@ -24,12 +24,11 @@ No technical skills needed!
 
 ## What is this?
 
-This bot helps you book an appointment from https://otv.verwalt-berlin.de/ams/TerminBuchen or https://service.berlin.de/dienstleistung/.
+This bot assists you in booking an appointment from either https://otv.verwalt-berlin.de/ams/TerminBuchen or https://service.berlin.de/dienstleistung/.
 
-For booking a LEA appointment: Without using a bot, you have to fill out the form every 10 minutes and constantly click the 'Next' button. It's INHUMANE. Even if you get to the date selection page, you probably can't book an appointment because someone else is faster than you, so you end up having to repeat the process endlessly. It should be a crime for the people who invented this!
-This bot automates the manual steps for you. You just need to fill out the initial form once and run the bot. When you hear the alert and notification, proceed with the remaining steps manually (selecting the time, solving the reCAPTCHA, and entering your name, birthday, and email), and end your nightmare.
+Booking an LEA appointment without the bot involves filling out the form every 10 minutes and continually clicking the 'Next' button. It's an exhausting process. Even if you reach the date selection page, someone else may secure the appointment before you, leaving you to repeat the process over and over. The bot automates these manual steps for you. You just need to complete the initial form once and then run the bot. When you hear the alert and notification, proceed with the remaining steps manually (choosing the time, solving the reCAPTCHA, and entering your name, date of birth, and email) to finalize your appointment.
 
-For booking a Bürgeramt appointment: Although you don't need to fill the fxxking form first, you still need to refresh the page constantly, and if you refresh the page too frequently, you could get blocked for 1 hour. By using this bot, it'll refresh the page every 60 seconds for you.
+For booking a Bürgeramt appointment, while you don't need to complete a form beforehand, you still must frequently refresh the page, which can lead to being blocked for an hour if done too often. The bot refreshes the page every 60 seconds for you, streamlining the process.
 
 ## How to use?
 
@@ -41,34 +40,41 @@ For booking a Bürgeramt appointment: Although you don't need to fill the fxxkin
    - [macOS (intel chip)](https://github.com/chialunwu/berlin-termin-bot/releases/download/v1.0.0/berlin-termin-bot_macosintel.zip)
 
 2. Unzip the file
-3. Right-click the program (`berlin-termin-bot`) and click 'Open' to run it (Don't double-click)
+3. Right-click the program (`berlin-termin-bot`) and click `Open` to run it (Don't double-click). To run it next time, simply double-click.
 
-### Book a LEA appointment
+<img width="476" alt="Screenshot 2024-05-09 at 23 37 08" src="https://github.com/chialunwu/berlin-termin-bot/assets/4144711/63d87b06-1114-48a4-bc16-ebdde0ed2357">
 
-1. Fill out the form and click `Start`
-2. Wait for the alarm/notification
-3. If you hear the alarm, rush to select the day and time and solve the reCAPTCHA. If the time dropdown is empty, it means it's gone. Go to the Terminal window and hit 'Enter' to start over.
-4. Good luck!
+### Book an LEA appointment
 
-#### Tips 💡
-
-You'll most likely get an appointment during working hours when they release new slots. Outside of working hours, you might occasionally see available time slots when people cancel their appointments, but it's nearly impossible to secure one. If you run the bot from 9 a.m. to 5 p.m., Monday to Friday, you should be able to get an appointment within 2-3 weeks. Cheer up!
+1. Click the `Immigration Office` button
+2. Fill out the form and click `Start`
+3. Wait for the alarm/notification
+4. If you hear the alarm, rush to select the day and time and solve the reCAPTCHA. If the time dropdown is empty, it means it's gone. Go to the Terminal window and hit 'Enter' to start over.
+5. Good luck!
 
 <img width="783" alt="Screenshot 2024-04-30 at 00 08 11" src="https://github.com/chialunwu/berlin-termin-bot/assets/4144711/e2bfd517-c2f3-4e60-9b62-d5829e91c3b9">
 
+#### 💡 Tips 💡
+
+You'll most likely get an appointment during working hours when they release new slots. Outside of working hours, you might occasionally see available time slots when people cancel their appointments, but it's nearly impossible to secure one. If you run the bot from 9 a.m. to 5 p.m., Monday to Friday, you should be able to get an appointment within 2-3 weeks. Cheer up!
+
 ### Book an Anmeldung appointment
 
-1. Click `Anmeldung einer Wohnung`
+1. Click the `Anmeldung einer Wohnung` button
 2. Wait for the alarm/notification
 3. Good luck!
 
-### Book other Bürgeramt appointment
+### Book a Bürgeramt appointment for additional services
 
-1. Click `Other Bürgeramt services`
+1. Click the `Other Bürgeramt services` button
 2. Enter the URL
-   - For example, for the service - https://service.berlin.de/dienstleistung/120686/, right click the `Berlinweite Terminbuchung` button and click `Copy Link Address`.
+   - For example, for the service - https://service.berlin.de/dienstleistung/120686/, right-click the `Berlinweite Terminbuchung` button and click `Copy Link Address`.
+      <img width="1439" alt="Screenshot 2024-05-09 at 23 10 11" src="https://github.com/chialunwu/berlin-termin-bot/assets/4144711/6be0500d-654c-40f6-8436-f97603a281e4">
 3. Wait for the alarm/notification
 4. Good luck!
+
+<img width="500" alt="Screenshot 2024-05-10 at 13 15 48" src="https://github.com/chialunwu/berlin-termin-bot/assets/4144711/13718573-1d85-476c-9b5b-f38a3b382110">
+
 
 ## Development
 
@@ -86,7 +92,7 @@ pip3 install -r requirements.txt
 python3 berlin-termin-bot.py
 ```
 
-## Support ❤️
+## ❤️ Support ❤️
 
 <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4WQZ5PBVUVJ4A">
   <img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" alt="Donate with PayPal" width=200 />
