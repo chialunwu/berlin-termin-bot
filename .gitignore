@@ -162,4 +162,4 @@ cython_debug/
 #.idea/
 
 berlin-termin-bot
-download/
+# download/
