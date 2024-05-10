@@ -14,13 +14,13 @@ No technical skills required!
 <br/>
 <br/>
 <div>
-  <a href="https://www.loom.com/share/36408247f4234b4083509450a3db2928">
-    <p>Watch demo</p>
-  </a>
-  <a href="https://www.loom.com/share/36408247f4234b4083509450a3db2928">
-    <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/36408247f4234b4083509450a3db2928-with-play.gif">
-  </a>
-</div>
+    <a href="https://www.loom.com/share/7011a313f44347e6a205384fbd03a0be">
+      <p>Watch demo</p>
+    </a>
+    <a href="https://www.loom.com/share/7011a313f44347e6a205384fbd03a0be">
+      <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/7011a313f44347e6a205384fbd03a0be-with-play.gif">
+    </a>
+  </div>
 
 ## What is this?
 
