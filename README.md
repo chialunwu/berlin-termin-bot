@@ -11,6 +11,8 @@ No technical skills required!
   <img src="resources/download-macos-intel-chip.png" alt="Download for macOS (intel chip)" width=400 />
 </a>
 
+[Windows (preview)](https://github.com/chialunwu/berlin-termin-bot/blob/6d8a3f46d6fd181246df96547aa82b39737c6ed3/download/windows/berlin-termin-bot_windows.zip)
+
 <br/>
 <br/>
 <div>
@@ -38,6 +40,7 @@ For booking a Bürgeramt appointment, while you don't need to complete a form be
 
    - [macOS (apple chip)](https://github.com/chialunwu/berlin-termin-bot/releases/download/v1.0.0/berlin-termin-bot_macosapple.zip)
    - [macOS (intel chip)](https://github.com/chialunwu/berlin-termin-bot/releases/download/v1.0.0/berlin-termin-bot_macosintel.zip)
+   - [Windows (preview)](https://github.com/chialunwu/berlin-termin-bot/blob/6d8a3f46d6fd181246df96547aa82b39737c6ed3/download/windows/berlin-termin-bot_windows.zip)
 
 2. Unzip the file
 3. Right-click the program (`berlin-termin-bot`) and click `Open` to run it (Don't double-click). To run it next time, simply double-click.
