@@ -14,7 +14,7 @@ ZIP_OUTPUT_MACOS_APPLE = $(DOWNLOAD_DIR_MACOS_APPLE)/$(OUTPUT_FILE)_macosapple.z
 ZIP_OUTPUT_MACOS_INTEL = $(DOWNLOAD_DIR_MACOS_INTEL)/$(OUTPUT_FILE)_macosintel.zip
 ZIP_OUTPUT_WINDOWS = $(DOWNLOAD_DIR_WINDOWS)\$(OUTPUT_FILE)_windows.zip
 ADD_DATA = "*.mp3:."
-PYTHON_SITE_PACKAGES = $(VENV_DIR)/lib/python3.*/site-packages/
+PYTHON_SITE_PACKAGES = $(VENV_DIR)\Lib\site-packages
 
 all: help
 
@@ -26,9 +26,8 @@ help:
 	@echo "  build_windows          - Build application for Windows and create ZIP package."
 
 install:
-#	python311 -m venv $(VENV_DIR)
-#	$(VENV_DIR)\Scripts\activate && 
-	pip311 install -r $(REQS_FILE)
+	python311 -m venv $(VENV_DIR)
+	$(VENV_DIR)\Scripts\activate &&  pip311 install -r $(REQS_FILE)
 	@echo "Installation complete. Virtual environment and dependencies set up."
 
 build: install
