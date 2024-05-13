@@ -58,3 +58,4 @@ release:
 	gh release create v1.0.0 --title "v1.0.0" --notes ""
 	gh release upload v1.0.0 'download/macos/applechip/berlin-termin-bot_macosapple.zip#macOS (apple chip)'
 	gh release upload v1.0.0 'download/macos/intelchip/berlin-termin-bot_macosintel.zip#macOS (intel chip)'
+	gh release upload v1.0.0 'download/windows/berlin-termin-bot.exe#Windows'

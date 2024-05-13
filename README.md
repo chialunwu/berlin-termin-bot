@@ -10,8 +10,11 @@ No technical skills required!
 <a href="https://github.com/chialunwu/berlin-termin-bot/releases/download/v1.0.0/berlin-termin-bot_macosintel.zip">
   <img src="resources/download-macos-intel-chip.png" alt="Download for macOS (intel chip)" width=400 />
 </a>
+<a href="https://github.com/chialunwu/berlin-termin-bot/releases/download/v1.0.0/berlin-termin-bot.exe">
+  <img src="resources/download-windows.png" alt="Download for Windows" width=300 />
+</a>
 
-[Windows (preview)](https://github.com/chialunwu/berlin-termin-bot/blob/6d8a3f46d6fd181246df96547aa82b39737c6ed3/download/windows/berlin-termin-bot_windows.zip)
+(Special credits to [@ananaphasia](https://github.com/ananaphasia) for building the Windows version!)
 
 <br/>
 <br/>
@@ -40,7 +43,7 @@ For booking a Bürgeramt appointment, while you don't need to complete a form be
 
    - [macOS (apple chip)](https://github.com/chialunwu/berlin-termin-bot/releases/download/v1.0.0/berlin-termin-bot_macosapple.zip)
    - [macOS (intel chip)](https://github.com/chialunwu/berlin-termin-bot/releases/download/v1.0.0/berlin-termin-bot_macosintel.zip)
-   - [Windows (preview)](https://github.com/chialunwu/berlin-termin-bot/blob/6d8a3f46d6fd181246df96547aa82b39737c6ed3/download/windows/berlin-termin-bot_windows.zip)
+   - [Windows](https://github.com/chialunwu/berlin-termin-bot/releases/download/v1.0.0/berlin-termin-bot.exe)
 
 2. Unzip the file
 3. Right-click the program (`berlin-termin-bot`) and click `Open` to run it (Don't double-click). To run it next time, simply double-click.
@@ -72,12 +75,11 @@ You'll most likely get an appointment during working hours when they release new
 1. Click the `Other Bürgeramt services` button
 2. Enter the URL
    - For example, for the service - https://service.berlin.de/dienstleistung/120686/, right-click the `Berlinweite Terminbuchung` button and click `Copy Link Address`.
-      <img width="1439" alt="Screenshot 2024-05-09 at 23 10 11" src="https://github.com/chialunwu/berlin-termin-bot/assets/4144711/6be0500d-654c-40f6-8436-f97603a281e4">
+     <img width="1439" alt="Screenshot 2024-05-09 at 23 10 11" src="https://github.com/chialunwu/berlin-termin-bot/assets/4144711/6be0500d-654c-40f6-8436-f97603a281e4">
 3. Wait for the alarm/notification
 4. Good luck!
 
 <img width="500" alt="Screenshot 2024-05-10 at 13 15 48" src="https://github.com/chialunwu/berlin-termin-bot/assets/4144711/13718573-1d85-476c-9b5b-f38a3b382110">
-
 
 ## Development
 
