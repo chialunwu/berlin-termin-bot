@@ -13,7 +13,7 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
+# dist/
 eggs/
 .eggs/
 lib/
@@ -162,4 +162,4 @@ cython_debug/
 #.idea/
 
 berlin-termin-bot
-download/
+# download/
