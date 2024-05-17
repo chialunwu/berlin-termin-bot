@@ -20,6 +20,8 @@ No technical skills required!
 - The Windows version may not work on your machine. Fix in-progress 🛠️
 - Special credits to [@ananaphasia](https://github.com/ananaphasia) for building the Windows version!
 
+**IMPORTANT**: For booking an LEA appointment, did you try to send a request using https://www.berlin.de/einwanderung/en/services/appointments/artikel.1144334.en.php already? You might get an appointment earlier using that approach.
+
 <br/>
 <br/>
 <div>
@@ -56,6 +58,8 @@ For booking a Bürgeramt appointment, while you don't need to complete a form be
 <img width="476" alt="Screenshot 2024-05-09 at 23 37 08" src="https://github.com/chialunwu/berlin-termin-bot/assets/4144711/63d87b06-1114-48a4-bc16-ebdde0ed2357">
 
 ### Book an LEA appointment
+
+#### !!IMPORTANT!!: You may not need to use this bot. Did you try to send a request to LEA using https://www.berlin.de/einwanderung/en/services/appointments/artikel.1144334.en.php ?
 
 1. Click the `Immigration Office` button
 2. Fill out the form and click `Start`
