@@ -44,7 +44,10 @@ For booking a Bürgeramt appointment, while you don't need to complete a form be
 
 ## How to use?
 
-To keep the bot running, you might need to prevent your laptop from falling asleep. You can install software like [Caffeine](https://intelliscapesolutions.com/apps/caffeine) to keep your laptop awake.
+### Prerequisites
+
+- Install [Chrome](https://www.google.com/chrome)
+- To keep the bot running, you might need to prevent your laptop from falling asleep. You can install software like [Caffeine](https://intelliscapesolutions.com/apps/caffeine) to keep your laptop awake.
 
 ### Get the bot
 
