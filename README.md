@@ -17,12 +17,13 @@ No technical skills required!
 </a>
 <br/>
 
-- The Windows version may not work on your machine. Fix in-progress 🛠️
-- Special credits to [@ananaphasia](https://github.com/ananaphasia) for building the Windows version!
+- _The Windows version may not work on your machine. Fix in-progress_ 🛠️
+- _Special credits to [@ananaphasia](https://github.com/ananaphasia) for building the Windows version!_
+
+<br/>
 
 **IMPORTANT**: For booking an LEA appointment, did you try to send a request using https://www.berlin.de/einwanderung/en/services/appointments/artikel.1144334.en.php already? You might get an appointment earlier using that approach.
 
-<br/>
 <br/>
 <div>
     <a href="https://www.loom.com/share/7011a313f44347e6a205384fbd03a0be">
@@ -42,6 +43,8 @@ Booking an LEA appointment without the bot involves filling out the form every 1
 For booking a Bürgeramt appointment, while you don't need to complete a form beforehand, you still must frequently refresh the page, which can lead to being blocked for an hour if done too often. The bot refreshes the page every 60 seconds for you, streamlining the process.
 
 ## How to use?
+
+To keep the bot running, you might need to prevent your laptop from falling asleep. You can install software like [Caffeine](https://intelliscapesolutions.com/apps/caffeine) to keep your laptop awake.
 
 ### Get the bot
 
