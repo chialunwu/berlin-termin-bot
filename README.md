@@ -2,7 +2,7 @@
 
 # Book a Berlin LEA/Bürgeramt appointment without wasting your valuable time
 
-No technical skills required!
+_NO TECHNICAL SKILLS REQUIRED!_
 
 <a href="https://github.com/chialunwu/berlin-termin-bot/releases/download/v1.0.0/berlin-termin-bot_macosapple.zip">
   <img src="resources/download-macos-apple-chip.png" alt="Download for macOS (apple chip)" width=400 />
@@ -16,9 +16,6 @@ No technical skills required!
   <img src="resources/download-windows.png" alt="Download for Windows" width=300 />
 </a>
 <br/>
-
-- _The Windows version may not work on your machine. Fix in-progress_ 🛠️
-- _Special credits to [@ananaphasia](https://github.com/ananaphasia) for building the Windows version!_
 
 <br/>
 
@@ -111,6 +108,9 @@ pip3 install -r requirements.txt
 ```bash
 python3 berlin-termin-bot.py
 ```
+
+## Special credits
+- Thanks [@ananaphasia](https://github.com/ananaphasia) for building the initial Windows version!
 
 ## ❤️ Support ❤️
 
