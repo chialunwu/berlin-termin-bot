@@ -763,6 +763,6 @@ if __name__ == "__main__":
         try:
             bot.run_loop()
         except Exception as e:
-            print(e)
-            bot.play_sound(SOUND['error'])
+            logging.error(e)
+            custom_playsound(SOUND['error'])
             time.sleep(10)
