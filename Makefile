@@ -8,7 +8,7 @@ DOWNLOAD_DIR_WINDOWS = download\windows
 SRC_FILE = berlin-termin-bot.py
 OUTPUT_FILE = berlin-termin-bot
 INSTRUCTION_FILE = instructions.txt
-PYINSTALLER = pyinstaller
+PYINSTALLER = .\pyinstaller.exe
 ZIP_CMD = zip -r
 ZIP_OUTPUT_MACOS_APPLE = $(DOWNLOAD_DIR_MACOS_APPLE)/$(OUTPUT_FILE)_macosapple.zip
 ZIP_OUTPUT_MACOS_INTEL = $(DOWNLOAD_DIR_MACOS_INTEL)/$(OUTPUT_FILE)_macosintel.zip
@@ -26,8 +26,8 @@ help:
 	@echo "  build_windows          - Build application for Windows and create ZIP package."
 
 install:
-	python311 -m venv $(VENV_DIR)
-	$(VENV_DIR)\Scripts\activate &&  pip311 install -r $(REQS_FILE)
+	python3 -m venv $(VENV_DIR)
+	$(VENV_DIR)\Scripts\activate &&  pip3 install -r $(REQS_FILE)
 	@echo "Installation complete. Virtual environment and dependencies set up."
 
 build: install
@@ -49,6 +49,7 @@ build_macos-intelchip: build
 	@echo "Build and packaging complete for macOS Intel chip. ZIP file created at $(ZIP_OUTPUT_MACOS_INTEL)."
 
 build_windows: build
+	pip3 install --upgrade setuptools wheel 
 	@if not exist "$(DOWNLOAD_DIR_WINDOWS)" mkdir $(DOWNLOAD_DIR_WINDOWS)
 	del /q $(DOWNLOAD_DIR_WINDOWS)\*
 	powershell Compress-Archive -Path $(OUTPUT_FILE) -DestinationPath $(ZIP_OUTPUT_WINDOWS)

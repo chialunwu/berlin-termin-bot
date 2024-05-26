@@ -293,41 +293,39 @@ logging.basicConfig(
 
 
 def send_notification(title, message):
-    if platform.system() == 'Darwin':
-        try:
-            script = 'display notification "{}" with title "{}"'.format(
-                message, title)
+    try:
+        if platform.system() == 'Darwin':
+            script = 'display notification "{}" with title "{}"'.format(message, title)
             os.system('osascript -e \'{}\''.format(script))
-        except Exception as e:
-            logging.error(e)
-
+    except Exception as e:
+        logging.error(e)
 
 def clear_input_buffer():
     while msvcrt.kbhit():
         msvcrt.getch()
 
 
-def get_input(q):
-    try:
-        user_input = input()
-        q.put(user_input)
-    except EOFError:
-        q.put(None)
-
-
-def input_with_timeout(prompt, timeout):
-    clear_input_buffer()
-    q = queue.Queue()
-    thread = threading.Thread(target=get_input, args=(q,))
-    thread.start()
+def custom_input(prompt):
     try:
         logging.info(prompt)
-        user_input = q.get(timeout=timeout)
-    except queue.Empty:
-        logging.warning("Input timeout reached. Continuing with program...")
-        user_input = None
-    thread.join(timeout=0.1)
-    return user_input
+        clear_input_buffer()
+        return input()
+    except e:
+        logging.error(e)
+
+def custom_playsound(filename):
+    try:
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        playsound(os.path.join(dir_path, filename))
+    except e:
+        logging.error(e)
+
+def success(type):
+    logging.info("!!! SUCCESS - do not close the window !!!")
+    send_notification(f"!! {type} Termin Found !!", "Hurry up!")
+    custom_playsound(SOUND['success'])
+    custom_input("Press Enter to start over")
+    logging.info("Restarting...")
 
 
 def load_form(filepath):
@@ -411,8 +409,6 @@ class BerlinImmigrationOfficeBot:
                 s.select_by_visible_text(self.form["Citizenship"])
                 break
             except:
-                if i == 9:
-                    raise e
                 time.sleep(2)
         time.sleep(1)
         s = Select(driver.find_element(By.ID, 'xi-sel-400'))
@@ -447,7 +443,7 @@ class BerlinImmigrationOfficeBot:
             By.XPATH, f"//*[contains(text(),'{self.form['Option']}')]").click()
         time.sleep(4)
 
-        for _ in range(20):
+        for _ in range(10):
             try:
                 driver.find_element(
                     By.ID, 'applicationForm:managedForm:proceed').click()
@@ -456,12 +452,6 @@ class BerlinImmigrationOfficeBot:
                 time.sleep(2)
         time.sleep(10)
 
-    def _success(self):
-        logging.info("!!! SUCCESS - do not close the window !!!")
-        self.play_sound(SOUND['success'])
-        send_notification("!! Immigration Office Termin Found !!", "Hurry up!")
-        input_with_timeout("Press Enter to start over (5 minute timeout)", 300)
-        logging.info("Restarting...")
 
     def run_once(self, driver):
         self.enter_start_page(driver)
@@ -472,7 +462,7 @@ class BerlinImmigrationOfficeBot:
             logging.info(
                 f"Attempt: {self.attempts} (retry in {self.retry_seconds} seconds)")
             self.attempts += 1
-            for _ in range(3):
+            for _ in range(10):
                 active_tab = driver.find_element(
                     By.CLASS_NAME, "antcl_active").text
                 if active_tab:
@@ -480,24 +470,22 @@ class BerlinImmigrationOfficeBot:
                 time.sleep(2)
             active_tab = active_tab.replace('\n', ' ')
             if active_tab and "Service selection" not in active_tab:
-                self._success(driver)
+                success('Immigration Office')
                 return True
 
-            for j in range(3):
+            for _ in range(10):
                 try:
                     driver.find_element(
                         By.ID, 'applicationForm:managedForm:proceed').click()
                     break
                 except Exception as e:
-                    if j == 2:
-                        raise e
                     time.sleep(2)
             time.sleep(self.retry_seconds)
         return False
 
     def run_loop(self):
         with WebDriver() as driver:
-            self.play_sound(SOUND['start'])
+            custom_playsound(SOUND['start'])
             while True:
                 try:
                     success = self.run_once(driver)
@@ -506,13 +494,9 @@ class BerlinImmigrationOfficeBot:
                 except Exception as e:
                     if 'Alert' in str(e):
                         raise e
-                    self.play_sound(SOUND['error'])
+                    custom_playsound(SOUND['error'])
                 finally:
                     time.sleep(10)
-
-    def play_sound(self, filename):
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        playsound(os.path.join(dir_path, filename))
 
 
 class BerlinCitizenOfficeBot:
@@ -526,13 +510,6 @@ class BerlinCitizenOfficeBot:
         driver.get(self.url)
         driver.implicitly_wait(10)
 
-    def _success(self):
-        logging.info("!!! SUCCESS - do not close the window !!!")
-        self.play_sound(SOUND['success'])
-        send_notification("!! Bürgeramt Termin Found !!", "Hurry up!")
-        input_with_timeout("Press Enter to start over (5 minute timeout)", 300)
-        logging.info("Restarting...")
-
     def run_once(self, driver):
         self.enter_start_page(driver)
         try:
@@ -540,14 +517,14 @@ class BerlinCitizenOfficeBot:
             element = driver.find_element(
                 By.XPATH, f"//*[contains(text(),'Bitte wählen Sie ein Datum')]")
             if element:
-                self._success()
+                success('Bürgeramt')
                 return True
         except:
             pass
 
     def run_loop(self):
         with WebDriver() as driver:
-            self.play_sound(SOUND['start'])
+            custom_playsound(SOUND['start'])
             logging.info(
                 f"Checking {self.url} every 60 seconds (checking more frequently could get you blocked for 1 hour)")
             attempts = 0
@@ -558,14 +535,10 @@ class BerlinCitizenOfficeBot:
                     if not success:
                         time.sleep(self.retry_seconds)
                 except Exception as e:
-                    self.play_sound(SOUND['error'])
+                    custom_playsound(SOUND['error'])
                     time.sleep(10)
                 finally:
                     attempts += 1
-
-    def play_sound(self, filename):
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        playsound(os.path.join(dir_path, filename))
 
 
 class LEAInputForm(QWidget):
@@ -824,5 +797,5 @@ if __name__ == "__main__":
             bot.run_loop()
         except Exception as e:
             print(e)
-            bot.play_sound(SOUND['error'])
+            custom_playsound(SOUND['error'])
             time.sleep(10)
