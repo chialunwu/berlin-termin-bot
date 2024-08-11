@@ -1,3 +1,8 @@
+As announced on https://www.berlin.de/einwanderung/termine/termin-vereinbaren/, LEA permanently killed their appointment booking website. RIP all the Termin bots, good or bad.
+<img width="989" alt="Screenshot 2024-08-11 at 19 25 00" src="https://github.com/user-attachments/assets/3a3191cb-50ac-45fd-8369-1cb5a2b15a8a">
+
+
+
 <img width="255" alt="Screenshot 2024-05-02 at 00 10 34" src="https://github.com/chialunwu/berlin-termin-bot/assets/4144711/fea0cf5a-24ca-45ec-87ea-e779aa2fd275">
 
 # Book a Berlin LEA/Bürgeramt appointment without wasting your valuable time
